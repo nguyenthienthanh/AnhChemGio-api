@@ -41,7 +41,7 @@
 
 
 <h2 id="markdown-header-running-dev-server">Running Dev Server</h2>
-<div class="codehilite"><pre><span></span>npm run dev
+<div class="codehilite"><pre><span></span>npm run dev-api
 </pre></div>
 
 
