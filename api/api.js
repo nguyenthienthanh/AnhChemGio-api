@@ -1,22 +1,21 @@
 import express from 'express';
+import session from 'express-session';
 import morgan from 'morgan';
-import http from 'http';
+import winston from 'winston';
+import passport from 'passport';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
-import debuger from 'debug';
-import winston from 'winston';
 import moment from 'moment';
-import pretty from 'pretty-error';
+import PrettyError from 'pretty-error';
 
-const app = express();
+const pretty = new PrettyError();
+
 const config = {
   apiPort: 3030,
   apiHost: 'localhost'
 };
-app.use(morgan('dev'));
-app.use(bodyParser.json());
-app.use(cookieParser());
 
+/* Logger configuration */
 const logger = new winston.Logger({
   transports: [
     new winston.transports.File({
@@ -45,6 +44,33 @@ logger.stream = {
     logger.info(msg);
   }
 };
+
+const app = express();
+
+app.set('secret', 'whoareyou in passport');
+global.secret = app.get('secret');
+
+app.use(session({
+  secret: app.get('secret'),
+  resave: true,
+  cookie: { maxAge: 60000 * 60 * 24, expires: new Date(9999999999999) },
+  saveUninitialized: true
+}));
+
+app.use(morgan('combined', { stream: logger.stream }));
+app.use(morgan('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use('/', (req, res, next) => {
+  console.log(req.originalUrl);
+  next();
+}, require('./routes/index'));
+
 /* ERROR HANDLER */
 app.use((error, req, res, next) => {
   if (error.code >= 500) console.error(pretty.render(error));
@@ -57,68 +83,12 @@ app.use((error, req, res, next) => {
   next();
 });
 
-app.use('/', (req, res, next) => {
-  console.log(req.originalUrl);
-  next();
-}, require('./routes/index'));
-// error handlers
-
-// development error handler
-// will print stacktrace
-if (app.get('env') === 'development') {
-  app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error', {
-      message: err.message,
-      error: err
-    });
-  });
-}
-
-// production error handler
-// no stacktraces leaked to user
-app.use(function(err, req, res, next) {
-  res.status(err.status || 500);
-  res.render('error', {
-    message: err.message,
-    error: {}
-  });
-});
-
-const debug = debuger('AnhChemGio-api:server');
-
-/**
- * Get port from environment and store in Express.
- */
-const port = normalizePort(process.env.PORT || config.apiPort);
-app.set('port', port);
-
-
-/**
- * Create HTTP server.
- */
-
-const server = http.createServer(app);
-
-/**
- * Listen on provided port, on all network interfaces.
- */
-server.listen(port, err => {
-  if (err) {
-      console.error(err);
-    }
-    console.info('----\n==> 🌎  API is running on port %s', config.apiPort);
-    console.info('==> 💻  Send requests to http://%s:%s', config.apiHost, config.apiPort);
-});
-server.on('error', onError);
-server.on('listening', onListening);
-
 /**
  * Normalize a port into a number, string, or false.
  */
 
 function normalizePort(val) {
-  var port = parseInt(val, 10);
+  const port = parseInt(val, 10);
 
   if (isNaN(port)) {
     // named pipe
@@ -134,6 +104,13 @@ function normalizePort(val) {
 }
 
 /**
+ * Get port from environment and store in Express.
+ */
+const port = normalizePort(process.env.PORT || config.apiPort);
+app.set('port', port);
+app.set('host', config.apiHost);
+
+/**
  * Event listener for HTTP server "error" event.
  */
 
@@ -142,7 +119,7 @@ function onError(error) {
     throw error;
   }
 
-  var bind = typeof port === 'string'
+  const bind = typeof port === 'string'
     ? 'Pipe ' + port
     : 'Port ' + port;
 
@@ -162,13 +139,17 @@ function onError(error) {
 }
 
 /**
+ * Listen on provided port, on all network interfaces.
+ */
+const server = app.listen(app.get('port'), err => {
+  if (err) {
+    console.error(err);
+  }
+  console.info('----\n==> 🌎  API is running on port %s', app.get('port'));
+  console.info('==> 💻  Send requests to http://%s:%s', app.get('host'), app.get('port'));
+});
+/**
  * Event listener for HTTP server "listening" event.
  */
 
-function onListening() {
-  var addr = server.address();
-  var bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
-  debug('Listening on ' + bind);
-}
+server.on('error', onError);
