@@ -1,5 +1,5 @@
 import * as firebase from 'firebase';
-const firebaseConfig = require('../config');
+const firebaseConfig = require('./config');
 
 firebase.initializeApp(firebaseConfig);
 
