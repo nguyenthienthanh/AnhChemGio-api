@@ -1,8 +1,7 @@
 module.exports = {
-	//cofig firebase
-	apiKey: "AIzaSyDphzWvCtiqU2CgPZwjl2VR8oHA5CNuZFs",
-	authDomain: "anhchemgio-37058.firebaseapp.com",
-	databaseURL: "https://anhchemgio-37058.firebaseio.com",
-	storageBucket: "anhchemgio-37058.appspot.com",
-	messagingSenderId: "40436526568"
-}
+    apiKey: "AIzaSyAyWm4yyXuvoPYS63FLrdodms0F7jBjouk",
+    authDomain: "anhchemgio-4f4de.firebaseapp.com",
+    databaseURL: "https://anhchemgio-4f4de.firebaseio.com",
+    storageBucket: "anhchemgio-4f4de.appspot.com",
+    messagingSenderId: "103090494073"
+  };

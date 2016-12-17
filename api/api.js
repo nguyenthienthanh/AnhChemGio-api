@@ -7,7 +7,6 @@ import debuger from 'debug';
 import winston from 'winston';
 import moment from 'moment';
 import pretty from 'pretty-error';
-import * as firebase from 'firebase';
 
 const app = express();
 const config = {
@@ -173,7 +172,3 @@ function onListening() {
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
 }
-
-const firebaseConfig = require('./config');
-
-firebase.initializeApp(firebaseConfig);
