@@ -1,0 +1,9 @@
+.idea/
+node_modules/
+logs/
+dist/
+*.iml
+*.csv
+npm-debug.log
+static/uploads
+api/config.js
