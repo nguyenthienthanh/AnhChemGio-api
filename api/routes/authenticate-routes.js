@@ -1,36 +1,24 @@
 import express from 'express';
+import InternalError from '../utils/ErrorHandlers';
 import _md5 from 'md5';
 const router = express.Router({
   mergeParams: true
 }); // eslint-disable-line
-import Users from '../models/user-models';
+import * as UserServices from '../services/user-services';
 
 const md5 = text => _md5(_md5(text));
 
-router.route('/')
-  .get((req, res, next) => {
-    const userId = req.query.userId;
-    Users(userId).once('value').then(user => {
-      res.json(user.val());
-    });
-  })
+router.route('/login')
   .post((req, res, next) => {
-    const {
-      name,
-      username,
-      password
-    } = req.body;
-    const pass = md5(password);
-    Users().update({
-      name,
-      username,
-      pass
-    });
-    res.json({
-      name,
-      username,
-      pass
-    });
+
+  });
+
+router.route('/signup')
+  .post((req, res, next) => {
+    const {name, username, password} = req.body;
+    UserServices.create({name, username, password})
+      .then(createdUser => res.json(createdUser))
+      .catch(err => next(InternalError(err)));
   });
 
 module.exports = router;

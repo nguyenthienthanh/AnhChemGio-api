@@ -11,10 +11,9 @@ import PrettyError from 'pretty-error';
 import * as firebase from 'firebase';
 const firebaseConfig = require('./config');
 
-const firebaseApp = firebase.initializeApp(firebaseConfig, 'firebase-web');
+const firebaseApp = firebase.initializeApp(firebaseConfig);
 
 if (firebaseApp.options.apiKey === firebaseConfig.apiKey) {
-  global.database = firebase.database(firebaseApp);
   console.log('==> 🛢 Firebase is connected on %s 😉', firebaseApp.l);
 }
 
