@@ -7,6 +7,7 @@ import debuger from 'debug';
 import winston from 'winston';
 import moment from 'moment';
 import pretty from 'pretty-error';
+import * as firebase from 'firebase';
 
 const app = express();
 const config = {
@@ -172,12 +173,7 @@ function onListening() {
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
 }
-//cofig firebase
- var config = {
-    apiKey: "AIzaSyDphzWvCtiqU2CgPZwjl2VR8oHA5CNuZFs",
-    authDomain: "anhchemgio-37058.firebaseapp.com",
-    databaseURL: "https://anhchemgio-37058.firebaseio.com",
-    storageBucket: "anhchemgio-37058.appspot.com",
-    messagingSenderId: "40436526568"
-  };
-  firebase.initializeApp(config);
+
+const firebaseConfig = require('./config');
+
+firebase.initializeApp(firebaseConfig);
