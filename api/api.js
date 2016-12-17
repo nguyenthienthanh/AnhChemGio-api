@@ -1,29 +1,60 @@
 import express from 'express';
-import path from 'path';
-import favicon from 'serve-favicon';
-import logger from 'morgan';
+import morgan from 'morgan';
 import http from 'http';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import debuger from 'debug';
+import winston from 'winston';
+import moment from 'moment';
+import pretty from 'pretty-error';
 
 const app = express();
 const config = {
   apiPort: 3030,
   apiHost: 'localhost'
 };
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
+app.use(morgan('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  const err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+const logger = new winston.Logger({
+  transports: [
+    new winston.transports.File({
+      name: 'error_logs',
+      level: 'error',
+      filename: `logs/${moment().format('YYYYMMDD')}_error.log`,
+      // silent: true,
+      maxsize: 5242880, // 5MB
+      showLevel: false,
+      json: true
+    }),
+    new winston.transports.File({
+      name: 'info_logs',
+      level: 'info',
+      filename: `logs/${moment().format('YYYYMMDD')}_all.log`,
+      // silent: true,
+      maxsize: 5242880, // 5MB
+      showLevel: false,
+      json: true
+    })
+  ]
+});
+
+logger.stream = {
+  write: msg => {
+    logger.info(msg);
+  }
+};
+/* ERROR HANDLER */
+app.use((error, req, res, next) => {
+  if (error.code >= 500) console.error(pretty.render(error));
+  else console.error(pretty.render(error.message));
+  logger.error(error);
+  res.status(error.code || 500).json({
+    code: error.code || 500,
+    message: error.message
+  });
+  next();
 });
 
 app.use('/', (req, res, next) => {

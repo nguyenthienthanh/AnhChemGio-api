@@ -54,10 +54,15 @@
     "debug": "~2.2.0",
     "express": "~4.13.4",
     "md5": "^2.1.0",
+    "moment": "^2.17.1",
+    "mongoose": "^4.7.2",
+    "mongoose-timestamp": "^0.6.0",
     "morgan": "~1.7.0",
     "piping": "^0.3.0",
+    "pretty-error": "^2.0.2",
     "serve-favicon": "~2.3.0",
-    "webpack": "^1.14.0"
+    "webpack": "^1.14.0",
+    "winston": "^2.3.0"
   },
   "devDependencies": {
     "better-npm-run": "0.0.8",
