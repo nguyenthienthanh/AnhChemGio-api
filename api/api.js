@@ -8,6 +8,17 @@ import bodyParser from 'body-parser';
 import moment from 'moment';
 import PrettyError from 'pretty-error';
 
+import * as firebase from 'firebase';
+const firebaseConfig = require('./config');
+
+const firebaseApp = firebase.initializeApp(firebaseConfig, 'firebase-web');
+
+if (firebaseApp.options.apiKey === firebaseConfig.apiKey) {
+  global.database = firebase.database(firebaseApp);
+  console.log('==> 🛢 Firebase is connected on %s 😉', firebaseApp.l);
+}
+
+
 const pretty = new PrettyError();
 
 const config = {
@@ -145,8 +156,8 @@ const server = app.listen(app.get('port'), err => {
   if (err) {
     console.error(err);
   }
-  console.info('----\n==> 🌎  API is running on port %s', app.get('port'));
-  console.info('==> 💻  Send requests to http://%s:%s', app.get('host'), app.get('port'));
+  console.info('==> 🌎  API is running on port %s 😀', app.get('port'));
+  console.info('==> 💻  Send requests to http://%s:%s 😅', app.get('host'), app.get('port'));
 });
 /**
  * Event listener for HTTP server "listening" event.
