@@ -7,7 +7,10 @@ import * as MessageServices from '../services/message-services';
 
 router.route('/')
   .get((req, res, next) => {
-    res.json(req.params.groupId);
+    const groupId = req.params.groupId;
+    MessageServices.get(groupId)
+      .then(msg => res.json(msg))
+      .catch(err => next(InternalError(err)));
   })
   .post(accessManager, (req, res, next) => {
     const {content} = req.body;
@@ -15,7 +18,7 @@ router.route('/')
     delete req.user.id;
     delete req.user.pass;
     const user = req.user;
-    MessageServices.create(req.params.groupId, {content, [userId]: user})
+    MessageServices.set(req.params.groupId, {content, [userId]: user})
       .then(message => res.json(message))
       .catch(err => next(InternalError(err)));
   });

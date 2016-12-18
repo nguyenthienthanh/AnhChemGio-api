@@ -2,16 +2,18 @@ import firebase, { database } from 'firebase';
 
 import * as UserServices from './user-services';
 
-export function getById(key) {
+export function get(groupId) {
   return new Promise((resolve, reject) => {
-    database().ref(`/conversations/${key}`).once('value').then(user => {
-      resolve(user.val());
-    })
+    database().ref(`/conversations/${groupId}/messages`)
+      .once('value')
+      .then(msg => {
+        resolve(msg.val());
+      })
       .catch(err => reject(err));
   });
 }
 
-export function create(groupId, message) {
+export function set(groupId, message) {
   return new Promise((resolve, reject) => {
     const msgKey = database().ref()
       .child(`/conversations/${groupId}/messages`)
@@ -23,16 +25,3 @@ export function create(groupId, message) {
   });
 }
 
-export function invite(groupId, userId) {
-  return new Promise((resolve, reject) => {
-    UserServices.getById(userId)
-      .then(user => {
-        delete user.pass;
-        database()
-          .ref(`/conversations/${groupId}/peoples/${userId}`)
-          .update(user);
-        resolve({id: userId, ...user});
-      })
-      .catch(err => reject(err));
-  });
-}
