@@ -5,6 +5,8 @@ import * as UserServices from './user-services';
 export function get(groupId) {
   return new Promise((resolve, reject) => {
     database().ref(`/conversations/${groupId}/messages`)
+      .orderByChild('time')
+      .limitToLast(20)
       .once('value')
       .then(msg => {
         resolve(msg.val());
