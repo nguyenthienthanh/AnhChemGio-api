@@ -9,7 +9,7 @@ router.route('/')
   .get((req, res, next) => {
     res.json(req.params.groupId);
   })
-  .post((req, res, next) => {
+  .post(accessManager, (req, res, next) => {
     const {content} = req.body;
     const userId = req.user.id;
     delete req.user.id;
