@@ -12,9 +12,20 @@ router.route('/')
   .post(accessManager, (req, res, next) => {
     const {name} = req.body;
     const people = {};
-    people[0] = req.user;
+    const userId = req.user.id;
+    delete req.user.id;
+    people[userId] = req.user;
     GroupServices.create({name, people})
       .then(createdGroup => res.json(createdGroup))
+      .catch(err => next(InternalError(err)));
+  });
+
+router.route('/:groupId/invite')
+  .post((req, res, next) => {
+    const groupId = req.params.groupId;
+    const userId = req.body.userId;
+    GroupServices.invite(groupId, userId)
+      .then(group => res.json(group))
       .catch(err => next(InternalError(err)));
   });
 

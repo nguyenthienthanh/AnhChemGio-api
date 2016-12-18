@@ -10,7 +10,7 @@ export default function accessManager(req, res, next) {
   UserServices.getById(userId)
     .then(dbUser => {
       delete dbUser.password;
-      req.user = dbUser;
+      req.user = {id: userId, ...dbUser};
       next();
     })
     .catch(_error => next(InternalError(_error)));
