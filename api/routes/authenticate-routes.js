@@ -15,8 +15,8 @@ router.route('/login')
 
 router.route('/signup')
   .post((req, res, next) => {
-    const {name, username, password} = req.body;
-    UserServices.create({name, username, password})
+    const {displayName, username, password} = req.body;
+    UserServices.create({displayName, username, password})
       .then(createdUser => res.json(createdUser))
       .catch(err => next(InternalError(err)));
   });
