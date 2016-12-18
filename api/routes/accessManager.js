@@ -3,12 +3,11 @@ import * as UserServices from '../services/user-services';
 
 export default function accessManager(req, res, next) {
   const userId = req.body.userId || req.query.userId || req.headers['x-access-userId'];
-
   if (!userId) {
     next(InternalError('No userId provided.', 403));
     return;
   }
-  UserServices.findById(userId)
+  UserServices.getById(userId)
     .then(dbUser => {
       delete dbUser.password;
       req.user = dbUser;

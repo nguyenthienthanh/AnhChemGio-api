@@ -9,12 +9,12 @@ export function getById(key) {
   });
 }
 
-export function create(user) {
+export function create(group) {
   return new Promise((resolve, reject) => {
     const key = database().ref().child('conversations').push().key;
     database().ref(`/conversations/${key}`)
-      .update({...user, password: md5(user.password)})
-      .then(resolve({...user, password: md5(user.password)}))
+      .update(group)
+      .then(resolve(group))
       .catch(err => reject(err));
   });
 }
