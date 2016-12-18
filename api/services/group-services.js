@@ -26,7 +26,7 @@ export function invite(groupId, userId) {
     UserServices.getById(userId)
       .then(user => {
         database()
-          .ref(`/conversations/${groupId}/people/${userId}`)
+          .ref(`/conversations/${groupId}/peoples/${userId}`)
           .update(user);
         resolve({id: userId, ...user});
       })
