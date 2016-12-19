@@ -8,14 +8,21 @@ const router = express.Router({
 import * as GroupServices from '../services/group-services';
 
 router.route('/')
-  .get()
+  .get(accessManager, (req, res, next) => {
+    const userId = req.user.id;
+  })
   .post(accessManager, (req, res, next) => {
-    const {name} = req.body;
+    const {
+      name
+    } = req.body;
     const peoples = {};
     const userId = req.user.id;
     delete req.user.id;
     peoples[userId] = req.user;
-    GroupServices.create({name, peoples})
+    GroupServices.create({
+        name,
+        peoples
+      })
       .then(createdGroup => res.json(createdGroup))
       .catch(err => next(InternalError(err)));
   });
