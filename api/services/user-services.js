@@ -21,3 +21,17 @@ export function create(user) {
       .catch(err => reject(err));
   });
 }
+
+export function getByUsername(username){
+  return new Promise((resolve, reject) => {
+    database().ref(`/users/`).once('value')
+      .then(_users => {
+        const users = _users.val();
+        for(const id in users) {
+          if (users[id].username === username) resolve(users[id]);
+        }
+        resolve(null);
+      })
+      .catch(err => reject(err));
+  }); 
+}

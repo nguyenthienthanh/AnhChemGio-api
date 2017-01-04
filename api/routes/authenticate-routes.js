@@ -10,7 +10,15 @@ const md5 = text => _md5(_md5(text));
 
 router.route('/login')
   .post((req, res, next) => {
-
+  	const username = req.body.username;
+  	const password = req.body.password;
+  	UserServices.getByUsername(username)
+  		.then(user => {
+  			if (user && user.password === md5(password)) {
+  				res.json(user);
+  			} else next(InternalError('Sai thông tin đăng nhập', 403));
+  		})
+  		.catch(err => next(InternalError(err)));
   });
 
 router.route('/signup')
