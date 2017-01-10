@@ -23,8 +23,10 @@ router.route('/login')
 
 router.route('/signup')
   .post((req, res, next) => {
-    const {displayName, username, password} = req.body;
-    UserServices.create({displayName, username, password})
+    const avatar = 'http://webblog.whelastic.net/images/user-no-avatar.png';
+    const status = true;
+    const {displayName, username, password, email} = req.body;
+    UserServices.create({displayName, username, password, email, avatar, status})
       .then(createdUser => res.json(createdUser))
       .catch(err => next(InternalError(err)));
   });
