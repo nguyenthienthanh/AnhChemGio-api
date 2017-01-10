@@ -43,13 +43,33 @@ export function invite(conversationId, userId) {
   });
 }
 
-// Lấy DS group, DS user trong group.
-export function get(userId){
+// Lấy DS group cua thanh vien
+export function getByUserId(userId){
   return new Promise((resolve,reject) =>{
     database()
-      .ref(`/conversations/$conversationsid/peoples/${userId}`)
+      .ref(`/conversations`)
       .once('value')
-      .then(conversations => resolve(conversations))
+      .then(conversations => {
+        let groups = {};
+        for(const id in conversations.val()) {
+          const peoples = conversations.val()[id].peoples;
+          if (peoples && peoples[userId]) {
+            groups[id] = conversations.val()[id];
+          }
+        }
+        resolve(groups);
+      })
+      .catch(err => reject(err));
+  });
+}
+ // DS user trong group.
+export function get(conversationsid) {
+  return new Promise((resolve, reject) => {
+    database().ref(`/conversations/${conversationsid}/user`)
+      .once('value')
+      .then(user => {
+        resolve(user.val());
+      })
       .catch(err => reject(err));
   });
 }

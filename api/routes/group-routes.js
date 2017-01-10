@@ -8,9 +8,12 @@ const router = express.Router({
 import * as GroupServices from '../services/group-services';
 
 router.route('/')
-  .get(accessManager, (req, res, next) => {
-    const userId = req.user.id;
-  })
+.get(accessManager, (req, res, next) => {
+  const userId = req.user.id;
+  GroupServices.getByUserId(userId)
+    .then(groups => res.json(groups))
+    .catch(err => next(InternalError(err)));
+})
   .post(accessManager, (req, res, next) => {
     const {
       name
