@@ -18,7 +18,7 @@ export function create(conversation) {
     const key = database().ref().child('conversations').push().key;
     database()
       .ref(`/conversations/${key}`)
-      .update(conversation)
+      .update({conversationID: key, lastMessage: '', time: firebase.database.ServerValue.TIMESTAMP, ...conversation})
       .then(resolve({
         id: key,
         ...conversation
