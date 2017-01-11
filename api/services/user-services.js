@@ -28,7 +28,7 @@ export function getByUsername(username){
       .then(_users => {
         const users = _users.val();
         for(const id in users) {
-          if (users[id].username === username) resolve(users[id]);
+          if (users[id].username === username) resolve({id: id, ...users[id]});
         }
         resolve(null);
       })
