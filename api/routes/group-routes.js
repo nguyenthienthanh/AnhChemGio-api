@@ -39,4 +39,12 @@ router.route('/:groupId/invite')
       .catch(err => next(InternalError(err)));
   });
 
+router.route('/:groupId')
+  .get((req, res, next) => {
+    const id = req.params.groupId;
+    GroupServices.getById(id)
+      .then(group => res.json(group))
+      .catch(err => next(InternalError(err)));
+  });
+
 module.exports = router;

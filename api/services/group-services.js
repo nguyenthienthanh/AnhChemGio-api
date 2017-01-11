@@ -62,14 +62,4 @@ export function getByUserId(userId){
       .catch(err => reject(err));
   });
 }
- // DS user trong group.
-export function get(conversationsid) {
-  return new Promise((resolve, reject) => {
-    database().ref(`/conversations/${conversationsid}/user`)
-      .once('value')
-      .then(user => {
-        resolve(user.val());
-      })
-      .catch(err => reject(err));
-  });
-}
+
